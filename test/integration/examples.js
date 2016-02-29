@@ -6,7 +6,7 @@ const _ = require('lodash');
 const JSONAPISerializer = require('../../');
 const articlesData = require('../fixture/articles.data');
 
-describe.only('Examples', function() {
+describe('Examples', function() {
   var Serializer = new JSONAPISerializer();
   Serializer.register('article', {
     id: 'id',
@@ -59,7 +59,7 @@ describe.only('Examples', function() {
 
   it('should serialize articles data', function(done) {
     var serializedData = Serializer.serialize('article', articlesData);
-    /*expect(serializedData).to.have.property('jsonapi').to.have.property('version');
+    expect(serializedData).to.have.property('jsonapi').to.have.property('version');
     expect(serializedData).to.have.property('data');
     expect(serializedData.data).to.be.instanceof(Array).to.have.lengthOf(2);
     expect(serializedData.data[0]).to.have.property('type').to.eql('article');
@@ -103,8 +103,7 @@ describe.only('Examples', function() {
     expect(includedAuhor1.attributes).to.have.property('age');
     expect(includedAuhor1.attributes).to.have.property('gender');
     expect(includedAuhor1).to.have.property('links');
-    expect(includedAuhor1.links).to.have.property('self').to.eql('/peoples/1');*/
-    console.log(JSON.stringify(serializedData));
+    expect(includedAuhor1.links).to.have.property('self').to.eql('/peoples/1');
     done();
   });
 });
