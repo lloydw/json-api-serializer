@@ -202,13 +202,13 @@ describe('JSONAPISerializer', function() {
       },
     });
 
-    it('should return unundefined relationships for no relationships options', function(done) {
+    it('should return undefined relationships for no relationships options', function(done) {
       const included = [];
       const serializedRelationships = Serializer.serializeRelationships({
         id: '1',
         name: 'Author 1',
       }, Serializer.schemas.authors.default, included);
-      expect(serializedRelationships).to.be.unundefined;
+      expect(serializedRelationships).to.be.undefined;
       done();
     });
 
@@ -229,12 +229,12 @@ describe('JSONAPISerializer', function() {
       expect(serializedRelationships.author).to.have.property('data');
       expect(serializedRelationships.author.data).to.have.property('type').to.eql('authors');
       expect(serializedRelationships.author.data).to.have.property('id').to.eql('1');
-      expect(serializedRelationships.author).to.have.property('links').to.be.unundefined;
+      expect(serializedRelationships.author).to.have.property('links').to.be.undefined;
       expect(serializedRelationships).to.have.property('comments');
       expect(serializedRelationships.comments).to.have.property('data').to.be.instanceof(Array).to.have.lengthOf(2);
       expect(serializedRelationships.comments.data[0]).to.have.property('type').to.eql('comments');
       expect(serializedRelationships.comments.data[0]).to.have.property('id').to.eql('1');
-      expect(serializedRelationships.comments).to.have.property('links').to.be.unundefined;
+      expect(serializedRelationships.comments).to.have.property('links').to.be.undefined;
       done();
     });
   });
@@ -275,9 +275,9 @@ describe('JSONAPISerializer', function() {
 
   describe('serializeIncluded', function() {
     const Serializer = new JSONAPISerializer();
-    it('should return unundefined for empty included', function(done) {
+    it('should return undefined for empty included', function(done) {
       const serializedIncluded = Serializer.serializeIncluded([]);
-      expect(serializedIncluded).to.be.unundefined;
+      expect(serializedIncluded).to.be.undefined;
       done();
     });
 
@@ -330,27 +330,27 @@ describe('JSONAPISerializer', function() {
     it('should serialize empty single data', function(done) {
       const serializedData = Serializer.serialize('articles', {});
       expect(serializedData.data).to.eql(null);
-      expect(serializedData.included).to.be.unundefined;
-      expect(serializedData.links).to.be.unundefined;
+      expect(serializedData.included).to.be.undefined;
+      expect(serializedData.links).to.be.undefined;
       done();
     });
 
     it('should serialize empty array data', function(done) {
       const serializedData = Serializer.serialize('articles', []);
       expect(serializedData.data).to.eql([]);
-      expect(serializedData.included).to.be.unundefined;
-      expect(serializedData.links).to.be.unundefined;
+      expect(serializedData.included).to.be.undefined;
+      expect(serializedData.links).to.be.undefined;
       done();
     });
 
-    it('should throw an error if type as not been undefined', function(done) {
+    it('should throw an error if type as not been registered', function(done) {
       expect(function() {
         Serializer.serialize('authors', {});
       }).to.throw(Error, 'No type registered for authors');
       done();
     });
 
-    it('should throw an error if custom schema as not been undefined', function(done) {
+    it('should throw an error if custom schema as not been registered', function(done) {
       expect(function() {
         Serializer.serialize('articles', {}, 'custom');
       }).to.throw(Error, 'No schema custom registered for articles');
