@@ -17,13 +17,214 @@ npm install --save json-api-serializer
 
 ## Usage
 
-WIP
+input data (can be a simple object or an array of objects)
+```javascript
+// Data
+var data = {
+  id: "1",
+  title: "JSON API paints my bikeshed!",
+  body: "The shortest article. Ever.",
+  created: "2015-05-22T14:56:29.000Z",
+  updated: "2015-05-22T14:56:28.000Z",
+  author: {
+    id: "1",
+    firstName: "Kaley",
+    lastName: "Maggio",
+    email: "Kaley-Maggio@example.com",
+    age: "80",
+    gender: "male"
+  },
+  tags: ["1", "2"],
+  photos: ["ed70cf44-9a34-4878-84e6-0c0e4a450cfe", "24ba3666-a593-498c-9f5d-55a4ee08c72e", "f386492d-df61-4573-b4e3-54f6f5d08acf"],
+  comments: [{
+    _id: "1",
+    body: "First !",
+    created: "2015-08-14T18:42:16.475Z"
+  }, {
+    _id: "2",
+    body: "I Like !",
+    created: "2015-09-14T18:42:12.475Z"
+  }, {
+    _id: "3",
+    body: "Awesome",
+    created: "2015-09-15T18:42:12.475Z"
+  }]
+}
+```
 
-json-api-serializer is currently under development.
+Register your resources types :
+```javascript
+var JSONAPISerializer = require('json-api-serializer');
+var Serializer = new JSONAPISerializer();
 
-Some examples are available in [unit tests](https://github.com/danivek/json-api-serializer/blob/master/test/unit/JSONAPISerializer.test.js)
+// Register 'article' type
+Serializer.register('article', {
+  id: 'id', // The attributes to use as the reference. Default = 'id'.
+  blackList: ['updated'], // An array of blacklisted attributes. Default = []
+  links: { // An object that describe links. Default = {}
+    self: function(data) { // Can be a function or a string value ex: { self: '/articles/1'}
+      return '/articles/' + data.id;
+    }
+  },
+  relationships: { // An object defining some relationships.
+    author: {
+      type: 'people', // The type of the resource registered
+      links: { // Relationships links
+        self: function(data) {
+          return '/articles/' + data.id + '/relationships/author';
+        },
+        related: function(data) {
+          return '/articles/' + data.id + '/author';
+        }
+      },
+    },
+    tags: {
+      type: 'tag' // The type of the resource registered
+    },
+    photos: {
+      type: 'photo' // The type of the resource registered
+    },
+    comments: {
+      type: 'comment' // The type of the resource registered
+    }
+  }
+});
 
-More examples will coming soon.
+// Register 'people' type
+Serializer.register('people', {
+  id: 'id',
+  links: {
+    self: function(data) {
+      return '/peoples/' + data.id;
+    }
+  }
+});
+
+// Register 'tag' type
+Serializer.register('tag', {
+  id: 'id',
+});
+
+// Register 'photo' type
+Serializer.register('photo', {
+  id: 'id',
+});
+
+// Register 'comment' type
+Serializer.register('comment', {
+  id: '_id',
+});
+```
+
+Serialize it with the corresponding resource type :
+
+```javascript
+Serializer.serialize('article', data);
+```
+
+The output data will be :
+```JSON
+{
+  "jsonapi": {
+    "version": "1.0"
+  },
+  "data": [{
+    "type": "article",
+    "id": "1",
+    "attributes": {
+      "title": "JSON API paints my bikeshed!",
+      "body": "The shortest article. Ever.",
+      "created": "2015-05-22T14:56:29.000Z"
+    },
+    "relationships": {
+      "author": {
+        "data": {
+          "type": "people",
+          "id": "1"
+        },
+        "links": {
+          "self": "/articles/1/relationships/author",
+          "related": "/articles/1/author"
+        }
+      },
+      "tags": {
+        "data": [{
+          "type": "tag",
+          "id": "1"
+        }, {
+          "type": "tag",
+          "id": "2"
+        }]
+      },
+      "photos": {
+        "data": [{
+          "type": "photo",
+          "id": "ed70cf44-9a34-4878-84e6-0c0e4a450cfe"
+        }, {
+          "type": "photo",
+          "id": "24ba3666-a593-498c-9f5d-55a4ee08c72e"
+        }, {
+          "type": "photo",
+          "id": "f386492d-df61-4573-b4e3-54f6f5d08acf"
+        }]
+      },
+      "comments": {
+        "data": [{
+          "type": "comment",
+          "id": "1"
+        }, {
+          "type": "comment",
+          "id": "2"
+        }, {
+          "type": "comment",
+          "id": "3"
+        }]
+      }
+    },
+    "links": {
+      "self": "/articles/1"
+    }
+  }],
+  "included": [{
+    "type": "people",
+    "id": "1",
+    "attributes": {
+      "firstName": "Kaley",
+      "lastName": "Maggio",
+      "email": "Kaley-Maggio@example.com",
+      "age": "80",
+      "gender": "male"
+    },
+    "links": {
+      "self": "/peoples/1"
+    }
+  }, {
+    "type": "comment",
+    "id": "1",
+    "attributes": {
+      "body": "First !",
+      "created": "2015-08-14T18:42:16.475Z"
+    }
+  }, {
+    "type": "comment",
+    "id": "2",
+    "attributes": {
+      "body": "I Like !",
+      "created": "2015-09-14T18:42:12.475Z"
+    }
+  }, {
+    "type": "comment",
+    "id": "3",
+    "attributes": {
+      "body": "Awesome",
+      "created": "2015-09-15T18:42:12.475Z"
+    }
+  }]
+}
+```
+
+
+Some others examples are available in [ tests folders](https://github.com/danivek/json-api-serializer/blob/master/test/)
 
 ## Requirements
 
