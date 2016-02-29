@@ -68,7 +68,7 @@ Serializer.register('article', {
   },
   relationships: { // An object defining some relationships.
     author: {
-      type: 'people', // The type of the resource registered
+      type: 'people', // The type of the resource
       links: { // Relationships links
         self: function(data) {
           return '/articles/' + data.id + '/relationships/author';
@@ -79,13 +79,13 @@ Serializer.register('article', {
       },
     },
     tags: {
-      type: 'tag' // The type of the resource registered
+      type: 'tag' // The type of the resource
     },
     photos: {
-      type: 'photo' // The type of the resource registered
+      type: 'photo' // The type of the resource
     },
     comments: {
-      type: 'comment' // The type of the resource registered
+      type: 'comment' // The type of the resource
     }
   }
 });
@@ -222,7 +222,6 @@ The output data will be :
   }]
 }
 ```
-
 
 Some others examples are available in [ tests folders](https://github.com/danivek/json-api-serializer/blob/master/test/)
 
