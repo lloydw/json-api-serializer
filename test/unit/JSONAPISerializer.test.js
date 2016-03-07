@@ -63,7 +63,7 @@ describe('JSONAPISerializer', function() {
       done();
     });
 
-    it('should return null for an empty array data', function(done) {
+    it('should return empty array for an empty array data', function(done) {
       const serializedData = Serializer.serializeData('articles', []);
       expect(serializedData).to.eql([]);
       done();
@@ -133,6 +133,18 @@ describe('JSONAPISerializer', function() {
           type: 'authors',
         },
       },
+    });
+
+    it('should return null for an empty single relationship data', function(done) {
+      const serializedRelationshipData = Serializer.serializeRelationship('articles', {});
+      expect(serializedRelationshipData).to.eql(null);
+      done();
+    });
+
+    it('should return empty array for an empty array of relationship data', function(done) {
+      const serializedRelationshipData = Serializer.serializeRelationship('articles', []);
+      expect(serializedRelationshipData).to.eql([]);
+      done();
     });
 
     it('should return serialized relationship data and populated included for a to one populated relationship', function(done) {
