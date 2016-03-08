@@ -37,6 +37,14 @@ describe('Examples', function() {
       comments: {
         type: 'comment'
       }
+    },
+    topLevelMeta: {
+      count: function(extraOptions) {
+        return extraOptions.count;
+      }
+    },
+    topLevelLinks: {
+      self: '/articles'
     }
   });
   Serializer.register('people', {
@@ -58,8 +66,12 @@ describe('Examples', function() {
   });
 
   it('should serialize articles data', function(done) {
-    var serializedData = Serializer.serialize('article', articlesData);
+    var serializedData = Serializer.serialize('article', articlesData, {
+      count: 2
+    });
     expect(serializedData).to.have.property('jsonapi').to.have.property('version');
+    expect(serializedData).to.have.property('meta').to.have.property('count').to.eql(2);
+    expect(serializedData).to.have.property('links').to.have.property('self').to.eql('/articles');
     expect(serializedData).to.have.property('data');
     expect(serializedData.data).to.be.instanceof(Array).to.have.lengthOf(2);
     expect(serializedData.data[0]).to.have.property('type').to.eql('article');
@@ -95,7 +107,10 @@ describe('Examples', function() {
     expect(serializedData.data[0].links).to.have.property('self').to.eql('/articles/1');
     expect(serializedData).to.have.property('included');
     expect(serializedData.included).to.be.instanceof(Array).to.have.lengthOf(10);
-    var includedAuhor1 = _.find(serializedData.included, { 'type': 'people', 'id': '1' });
+    var includedAuhor1 = _.find(serializedData.included, {
+      'type': 'people',
+      'id': '1'
+    });
     expect(includedAuhor1).to.have.property('attributes');
     expect(includedAuhor1.attributes).to.have.property('firstName');
     expect(includedAuhor1.attributes).to.have.property('lastName');

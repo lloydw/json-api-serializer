@@ -87,6 +87,14 @@ Serializer.register('article', {
     comments: {
       type: 'comment' // The type of the resource
     }
+  },
+  topLevelMeta: { // An object that describe top level meta. Default = {}
+    count: function(extraOptions) { // Can be a function (with extra options argument) or a string value
+      return extraOptions.count;
+    }
+  },
+  topLevelLinks: { // An object that describe top level links. Default = {}
+    self: '/articles' // Can be a function (with extra options argument) or a string value
   }
 });
 
@@ -116,10 +124,10 @@ Serializer.register('comment', {
 });
 ```
 
-Serialize it with the corresponding resource type :
+Serialize it with the corresponding resource type, data and optional extra options :
 
 ```javascript
-Serializer.serialize('article', data);
+Serializer.serialize('article', data, {count: 2});
 ```
 
 The output data will be :
@@ -127,6 +135,12 @@ The output data will be :
 {
   "jsonapi": {
     "version": "1.0"
+  },
+  "meta": {
+    "count": 2
+  },
+  "links": {
+    "self": "/articles"
   },
   "data": [{
     "type": "article",

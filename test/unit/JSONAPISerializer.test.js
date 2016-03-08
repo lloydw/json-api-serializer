@@ -1,5 +1,5 @@
 'use strict';
- /* eslint-disable */
+/* eslint-disable */
 
 const expect = require('chai').expect;
 const _ = require('lodash');
@@ -309,25 +309,25 @@ describe('JSONAPISerializer', function() {
     });
   });
 
-  describe('getLinks', function() {
+  describe('processOptionsValues', function() {
 
     const Serializer = new JSONAPISerializer();
-    it('should get links with simple links options', function(done) {
+    it('should process options with string values', function(done) {
       const linksOptions = {
         self: '/articles',
       };
-      const links = Serializer.getLinks({}, linksOptions);
+      const links = Serializer.processOptionsValues({}, linksOptions);
       expect(links).to.have.property('self').to.eql('/articles');
       done();
     });
 
-    it('should get links with links (function) options', function(done) {
+    it('should process options with functions values', function(done) {
       const linksOptions = {
         self: function(data) {
           return '/articles/' + data.id;
         },
       };
-      const links = Serializer.getLinks({
+      const links = Serializer.processOptionsValues({
         id: '1',
       }, linksOptions);
       expect(links).to.have.property('self').to.eql('/articles/1');
@@ -337,13 +337,18 @@ describe('JSONAPISerializer', function() {
 
   describe('serialize', function() {
     const Serializer = new JSONAPISerializer();
-    Serializer.register('articles');
+    Serializer.register('articles', {
+      topLevelMeta: {
+        count: function(options) {
+          return options.count
+        }
+      }
+    });
 
     it('should serialize empty single data', function(done) {
       const serializedData = Serializer.serialize('articles', {});
       expect(serializedData.data).to.eql(null);
       expect(serializedData.included).to.be.undefined;
-      expect(serializedData.links).to.be.undefined;
       done();
     });
 
@@ -351,7 +356,17 @@ describe('JSONAPISerializer', function() {
       const serializedData = Serializer.serialize('articles', []);
       expect(serializedData.data).to.eql([]);
       expect(serializedData.included).to.be.undefined;
+      done();
+    });
+
+    it('should serialize with extra options as the third argument', function(done) {
+      const serializedData = Serializer.serialize('articles', [], {
+        count: 0
+      });
+      expect(serializedData.data).to.eql([]);
+      expect(serializedData.included).to.be.undefined;
       expect(serializedData.links).to.be.undefined;
+      expect(serializedData.meta).to.have.property('count').to.eql(0);
       done();
     });
 
