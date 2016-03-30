@@ -43,7 +43,7 @@ describe('JSONAPISerializer', function() {
       const Serializer = new JSONAPISerializer();
       expect(function() {
         Serializer.register('bad', {
-          blackList: {
+          blacklist: {
             bad: 'badOptions',
           },
         });
@@ -275,7 +275,7 @@ describe('JSONAPISerializer', function() {
         body: 'Content of my article',
       };
       Serializer.register('articles', {
-        blackList: ['body'],
+        blacklist: ['body'],
       });
       const serializedAttributes = Serializer.serializeAttributes(data, Serializer.schemas.articles.default);
       expect(serializedAttributes).to.not.have.property('id');

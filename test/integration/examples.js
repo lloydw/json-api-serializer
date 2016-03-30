@@ -10,7 +10,7 @@ describe('Examples', function() {
   var Serializer = new JSONAPISerializer();
   Serializer.register('article', {
     id: 'id',
-    blackList: ['updated'],
+    blacklist: ['updated'],
     links: {
       self: function(data) {
         return '/articles/' + data.id;

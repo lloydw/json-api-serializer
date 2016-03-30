@@ -60,7 +60,7 @@ var Serializer = new JSONAPISerializer();
 // Register 'article' type
 Serializer.register('article', {
   id: 'id', // The attributes to use as the reference. Default = 'id'.
-  blackList: ['updated'], // An array of blacklisted attributes. Default = []
+  blacklist: ['updated'], // An array of blacklisted attributes. Default = []
   links: { // An object that describe links. Default = {}
     self: function(data) { // Can be a function or a string value ex: { self: '/articles/1'}
       return '/articles/' + data.id;
