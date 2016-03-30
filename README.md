@@ -15,6 +15,28 @@ Simply because others libraries are not as flexible as i need.
 npm install --save json-api-serializer
 ```
 
+## Documentation
+
+#### Register
+
+```javascript
+var JSONAPISerializer = require('json-api-serializer');
+var Serializer = new JSONAPISerializer();
+Serializer.register(type, options);
+```
+**Available options : **
+
+- *id* (optional): The attributes to use as the reference. Default = 'id'.
+- *blacklist* (optional): An array of blacklisted attributes. Default = [].
+- *whitelist* (optional): An array of whitelisted attributes. Default = [].
+- *links* (optional): An object that describes the links inside data. Values can be string or function (see examples below).
+- *topLevelMeta* (optional): An object that describes the top-level meta. Values can be string or function (see examples below).
+- *topLevelLinks* (optional): An object that describes the top-level links. Values can be string or function (see examples below).
+- *relationships* (optional): An object defining some relationships
+    - relationship: The property in data to use as a relationship
+        - *type*: The type to use for serializing the relationship (type need to be register)
+        - *links* (optional): An object that describes the links for the relationship. Values can be string or function (see examples below).
+
 ## Usage
 
 input data (can be a simple object or an array of objects)

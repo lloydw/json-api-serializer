@@ -283,6 +283,22 @@ describe('JSONAPISerializer', function() {
       expect(serializedAttributes).to.not.have.property('body');
       done();
     });
+
+    it('should return only whitelisted attributes', function(done) {
+      const data = {
+        id: '1',
+        title: 'My First article',
+        body: 'Content of my article',
+      };
+      Serializer.register('articles', {
+        whitelist: ['body'],
+      });
+      const serializedAttributes = Serializer.serializeAttributes(data, Serializer.schemas.articles.default);
+      expect(serializedAttributes).to.not.have.property('id');
+      expect(serializedAttributes).to.not.have.property('title');
+      expect(serializedAttributes).to.have.property('body');
+      done();
+    });
   });
 
   describe('serializeIncluded', function() {
