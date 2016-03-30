@@ -24,7 +24,7 @@ var JSONAPISerializer = require('json-api-serializer');
 var Serializer = new JSONAPISerializer();
 Serializer.register(type, options);
 ```
-**Available options : **
+**Available options :**
 
 - *id* (optional): The attributes to use as the reference. Default = 'id'.
 - *blacklist* (optional): An array of blacklisted attributes. Default = [].
