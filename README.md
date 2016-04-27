@@ -35,6 +35,7 @@ Serializer.register(type, options);
 - *relationships* (optional): An object defining some relationships
     - relationship: The property in data to use as a relationship
         - *type*: The type to use for serializing the relationship (type need to be register)
+        - *schema* (optional): A custom schema for serializing the relationship. If no schema define, it use the default one.
         - *links* (optional): An object that describes the links for the relationship. Values can be string or function (see examples below).
 
 ## Usage
@@ -107,7 +108,8 @@ Serializer.register('article', {
       type: 'photo' // The type of the resource
     },
     comments: {
-      type: 'comment' // The type of the resource
+      type: 'comment', // The type of the resource
+      schema: 'only-body' // A custom schema
     }
   },
   topLevelMeta: { // An object that describe top level meta. Default = {}
@@ -140,8 +142,8 @@ Serializer.register('photo', {
   id: 'id',
 });
 
-// Register 'comment' type
-Serializer.register('comment', {
+// Register 'comment' type with a custom schema
+Serializer.register('comment', 'only-body', {
   id: '_id',
 });
 ```
@@ -238,28 +240,50 @@ The output data will be :
     "type": "comment",
     "id": "1",
     "attributes": {
-      "body": "First !",
-      "created": "2015-08-14T18:42:16.475Z"
+      "body": "First !"
     }
   }, {
     "type": "comment",
     "id": "2",
     "attributes": {
-      "body": "I Like !",
-      "created": "2015-09-14T18:42:12.475Z"
+      "body": "I Like !"
     }
   }, {
     "type": "comment",
     "id": "3",
     "attributes": {
-      "body": "Awesome",
-      "created": "2015-09-15T18:42:12.475Z"
+      "body": "Awesome"
     }
   }]
 }
 ```
-
 Some others examples are available in [ tests folders](https://github.com/danivek/json-api-serializer/blob/master/test/)
+
+## Custom schemas
+
+It is possible to define multiple custom schemas for a resource type :
+
+```javascript
+Serializer.register(type, 'customSchema', options);
+```
+
+If you want to apply this schema on the primary data :
+
+```javascript
+Serializer.serialize('article', data, 'customSchema', {count: 2});
+```
+
+Or if you want to apply this schema on a relationship data, define this schema on relationships options with the key `schema` :
+
+Example :
+```javascript
+relationships: {
+  comments: {
+  type: 'comment'
+  schema: 'customSchema'
+  }
+}
+```
 
 ## Requirements
 

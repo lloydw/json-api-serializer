@@ -35,7 +35,8 @@ describe('Examples', function() {
         type: 'photo'
       },
       comments: {
-        type: 'comment'
+        type: 'comment',
+        schema: 'only-body'
       }
     },
     topLevelMeta: {
@@ -61,8 +62,9 @@ describe('Examples', function() {
   Serializer.register('photo', {
     id: 'id',
   });
-  Serializer.register('comment', {
+  Serializer.register('comment', 'only-body', {
     id: '_id',
+    whitelist: ['body']
   });
 
   it('should serialize articles data', function(done) {
@@ -119,6 +121,13 @@ describe('Examples', function() {
     expect(includedAuhor1.attributes).to.have.property('gender');
     expect(includedAuhor1).to.have.property('links');
     expect(includedAuhor1.links).to.have.property('self').to.eql('/peoples/1');
+    var includedComment1 = _.find(serializedData.included, {
+      'type': 'comment',
+      'id': '1'
+    });
+    expect(includedComment1).to.have.property('attributes');
+    expect(includedComment1.attributes).to.have.property('body');
+    expect(includedComment1.attributes).to.not.have.property('created');
     done();
   });
 });

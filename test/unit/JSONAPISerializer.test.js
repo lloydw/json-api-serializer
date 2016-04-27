@@ -197,6 +197,30 @@ describe('JSONAPISerializer', function() {
       expect(included).to.have.lengthOf(0);
       done();
     });
+
+    it('should return serialized relationship data and populated included with a custom schema', function(done) {
+      const Serializer2 = new JSONAPISerializer();
+      // Custom schema 'only-name' for authors resource
+      Serializer2.register('authors', 'only-name', {
+        whitelist: ['name']
+      });
+
+      const included = [];
+      const serializedRelationshipData = Serializer2.serializeRelationship('authors', {
+        id: '1',
+        name: 'Author 1',
+        gender: 'male'
+      }, Serializer2.schemas.authors['only-name'], included);
+      expect(serializedRelationshipData).to.have.property('type').to.eql('authors');
+      expect(serializedRelationshipData).to.have.property('id').to.eql('1');
+      expect(included).to.have.lengthOf(1);
+      expect(included[0]).to.have.property('type', 'authors');
+      expect(included[0]).to.have.property('id', '1');
+      expect(included[0]).to.have.property('attributes');
+      expect(included[0].attributes).to.have.property('name', 'Author 1');
+      expect(included[0].attributes).to.not.have.property('gender');
+      done();
+    });
   });
 
   describe('serializeRelationships', function() {
@@ -383,6 +407,28 @@ describe('JSONAPISerializer', function() {
       expect(serializedData.included).to.be.undefined;
       expect(serializedData.links).to.be.undefined;
       expect(serializedData.meta).to.have.property('count').to.eql(0);
+      done();
+    });
+
+    it('should serialize with a custom schema', function(done) {
+      const Serializer = new JSONAPISerializer();
+      Serializer.register('articles', 'only-title', {
+        whitelist: ['title']
+      });
+
+      const data = {
+        id: "1",
+        title: "JSON API paints my bikeshed!",
+        body: "The shortest article. Ever."
+      };
+
+      const serializedData = Serializer.serialize('articles', data, 'only-title');
+      expect(serializedData.data).to.have.property('type', 'articles');
+      expect(serializedData.data).to.have.property('id', '1');
+      expect(serializedData.data).to.have.property('attributes');
+      expect(serializedData.data.attributes).to.have.property('title');
+      expect(serializedData.data.attributes).to.not.have.property('body');
+      expect(serializedData.included).to.be.undefined;
       done();
     });
 
