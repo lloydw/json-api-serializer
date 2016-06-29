@@ -37,6 +37,7 @@ Serializer.register(type, options);
         - *type*: The type to use for serializing the relationship (type need to be register)
         - *schema* (optional): A custom schema for serializing the relationship. If no schema define, it use the default one.
         - *links* (optional): An object that describes the links for the relationship. Values can be string or function (see examples below).
+- *convertCase* (optional): Case conversion for outputted data. Value can be : `kebab-case`, `snake_case`, `camelCase`
 
 ## Usage
 

@@ -273,6 +273,28 @@ describe('JSONAPISerializer', function() {
       expect(serializedRelationships.comments).to.have.property('links').to.be.undefined;
       done();
     });
+
+    it('should return relationships with the convertCase options', function(done) {
+      const Serializer = new JSONAPISerializer();
+      Serializer.register('authors');
+      Serializer.register('articles', {
+        convertCase: 'kebab-case',
+        relationships: {
+          articleAuthors: {
+            type: 'authors',
+          }
+        }
+      });
+      const included = [];
+      const serializedRelationships = Serializer.serializeRelationships({
+        id: '1',
+        articleAuthors: {
+          id: '1'
+        },
+      }, Serializer.schemas.articles.default, included);
+      expect(serializedRelationships).to.have.property('article-authors');
+      done();
+    });
   });
 
   describe('serializeAttributes', function() {
@@ -321,6 +343,102 @@ describe('JSONAPISerializer', function() {
       expect(serializedAttributes).to.not.have.property('id');
       expect(serializedAttributes).to.not.have.property('title');
       expect(serializedAttributes).to.have.property('body');
+      done();
+    });
+
+    it('should convert attributes to kebab-case format', function(done) {
+      const Serializer = new JSONAPISerializer();
+      Serializer.register('articles', {
+        convertCase: 'kebab-case'
+      });
+      const data = {
+        id: '1',
+        firstName: 'firstName',
+        lastName: 'lastName',
+        articles: [{
+          createdAt: '2016-06-04T06:09:24.864Z'
+        }],
+        address: {
+          zipCode: 123456
+        }
+      };
+      const serializedAttributes = Serializer.serializeAttributes(data, Serializer.schemas.articles.default);
+      expect(serializedAttributes).to.have.property('first-name');
+      expect(serializedAttributes).to.have.property('last-name');
+      expect(serializedAttributes.articles[0]).to.have.property('created-at');
+      expect(serializedAttributes.address).to.have.property('zip-code');
+      done();
+    });
+
+    it('should convert attributes to snake_case format', function(done) {
+      const Serializer = new JSONAPISerializer();
+      Serializer.register('articles', {
+        convertCase: 'snake_case'
+      });
+      const data = {
+        id: '1',
+        firstName: 'firstName',
+        lastName: 'lastName',
+        articles: [{
+          createdAt: '2016-06-04T06:09:24.864Z'
+        }],
+        address: {
+          zipCode: 123456
+        }
+      };
+      const serializedAttributes = Serializer.serializeAttributes(data, Serializer.schemas.articles.default);
+      expect(serializedAttributes).to.have.property('first_name');
+      expect(serializedAttributes).to.have.property('last_name');
+      expect(serializedAttributes.articles[0]).to.have.property('created_at');
+      expect(serializedAttributes.address).to.have.property('zip_code');
+      done();
+    });
+
+    it('should convert attributes to camelCase format', function(done) {
+      const Serializer = new JSONAPISerializer();
+      Serializer.register('articles', {
+        convertCase: 'camelCase'
+      });
+      const data = {
+        id: '1',
+        'first-name': 'firstName',
+        'last-name': 'lastName',
+        articles: [{
+          'created-at': '2016-06-04T06:09:24.864Z'
+        }],
+        address: {
+          'zip-code': 123456
+        }
+      };
+      const serializedAttributes = Serializer.serializeAttributes(data, Serializer.schemas.articles.default);
+      expect(serializedAttributes).to.have.property('firstName');
+      expect(serializedAttributes).to.have.property('lastName');
+      expect(serializedAttributes.articles[0]).to.have.property('createdAt');
+      expect(serializedAttributes.address).to.have.property('zipCode');
+      done();
+    });
+
+    it('should not convert attributes with unsupported format', function(done) {
+      const Serializer = new JSONAPISerializer();
+      Serializer.register('articles', {
+        convertCase: 'unsupported'
+      });
+      const data = {
+        id: '1',
+        firstName: 'firstName',
+        lastName: 'lastName',
+        articles: [{
+          createdAt: '2016-06-04T06:09:24.864Z'
+        }],
+        address: {
+          zipCode: 123456
+        }
+      };
+      const serializedAttributes = Serializer.serializeAttributes(data, Serializer.schemas.articles.default);
+      expect(serializedAttributes).to.have.property('firstName');
+      expect(serializedAttributes).to.have.property('lastName');
+      expect(serializedAttributes.articles[0]).to.have.property('createdAt');
+      expect(serializedAttributes.address).to.have.property('zipCode');
       done();
     });
   });
