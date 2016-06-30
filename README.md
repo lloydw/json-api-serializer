@@ -1,7 +1,7 @@
 # json-api-serializer
 [![Build Status](https://travis-ci.org/danivek/json-api-serializer.svg?branch=master)](https://travis-ci.org/danivek/json-api-serializer)
 [![Coverage Status](https://coveralls.io/repos/github/danivek/json-api-serializer/badge.svg?branch=master)](https://coveralls.io/github/danivek/json-api-serializer?branch=master)
-
+[![npm](https://img.shields.io/npm/v/json-api-serializer.svg?maxAge=2592000)](https://www.npmjs.org/package/json-api-serializer)
 
 A Node.js framework agnostic library for serializing your data to [JSON API](http://jsonapi.org/) compliant responses (a specification for building APIs in JSON).
 
