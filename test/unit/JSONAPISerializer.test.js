@@ -417,30 +417,6 @@ describe('JSONAPISerializer', function() {
       expect(serializedAttributes.address).to.have.property('zipCode');
       done();
     });
-
-    it('should not convert attributes with unsupported format', function(done) {
-      const Serializer = new JSONAPISerializer();
-      Serializer.register('articles', {
-        convertCase: 'unsupported'
-      });
-      const data = {
-        id: '1',
-        firstName: 'firstName',
-        lastName: 'lastName',
-        articles: [{
-          createdAt: '2016-06-04T06:09:24.864Z'
-        }],
-        address: {
-          zipCode: 123456
-        }
-      };
-      const serializedAttributes = Serializer.serializeAttributes(data, Serializer.schemas.articles.default);
-      expect(serializedAttributes).to.have.property('firstName');
-      expect(serializedAttributes).to.have.property('lastName');
-      expect(serializedAttributes.articles[0]).to.have.property('createdAt');
-      expect(serializedAttributes.address).to.have.property('zipCode');
-      done();
-    });
   });
 
   describe('serializeIncluded', function() {
