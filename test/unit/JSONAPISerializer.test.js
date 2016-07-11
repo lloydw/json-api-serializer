@@ -122,6 +122,18 @@ describe('JSONAPISerializer', function() {
 
       done();
     });
+
+    it('should return type of string for a non string id in input', function(done) {
+      const singleData = {
+        id: 1,
+      };
+      const serializedData = Serializer.serializeData('articles', singleData, _.merge(defaultOptions, {
+        id: 'id',
+      }));
+      expect(serializedData).to.have.property('type').to.eql('articles');
+      expect(serializedData).to.have.property('id').to.be.a('string').to.eql('1');
+      done();
+    });
   });
 
   describe('serializeRelationship', function() {
@@ -154,7 +166,7 @@ describe('JSONAPISerializer', function() {
         name: 'Author 1',
       }, Serializer.schemas.authors.default, included);
       expect(serializedRelationshipData).to.have.property('type').to.eql('authors');
-      expect(serializedRelationshipData).to.have.property('id').to.eql('1');
+      expect(serializedRelationshipData).to.have.property('id').to.be.a('string').to.eql('1');
       expect(included).to.have.lengthOf(1);
       done();
     });
@@ -170,10 +182,20 @@ describe('JSONAPISerializer', function() {
       }], Serializer.schemas.authors.default, included);
       expect(serializedRelationshipData).to.be.instanceof(Array).to.have.lengthOf(2);
       expect(serializedRelationshipData[0]).to.have.property('type').to.eql('authors');
-      expect(serializedRelationshipData[0]).to.have.property('id').to.eql('1');
+      expect(serializedRelationshipData[0]).to.have.property('id').to.be.a('string').to.eql('1');
       expect(serializedRelationshipData[1]).to.have.property('type').to.eql('authors');
-      expect(serializedRelationshipData[1]).to.have.property('id').to.eql('2');
+      expect(serializedRelationshipData[1]).to.have.property('id').to.be.a('string').to.eql('2');
       expect(included).to.have.lengthOf(2);
+      done();
+    });
+
+    it('should return type of string for a to one populated relationship with non string id', function(done) {
+      const included = [];
+      const serializedRelationshipData = Serializer.serializeRelationship('authors', {
+        id: 1
+      }, Serializer.schemas.authors.default, included);
+      expect(serializedRelationshipData).to.have.property('type').to.eql('authors');
+      expect(serializedRelationshipData).to.have.property('id').to.be.a('string').to.eql('1');
       done();
     });
 
@@ -181,7 +203,7 @@ describe('JSONAPISerializer', function() {
       const included = [];
       const serializedRelationshipData = Serializer.serializeRelationship('authors', '1', Serializer.schemas.authors.default, included);
       expect(serializedRelationshipData).to.have.property('type').to.eql('authors');
-      expect(serializedRelationshipData).to.have.property('id').to.eql('1');
+      expect(serializedRelationshipData).to.have.property('id').to.be.a('string').to.eql('1');
       expect(included).to.have.lengthOf(0);
       done();
     });
@@ -191,10 +213,18 @@ describe('JSONAPISerializer', function() {
       const serializedRelationshipData = Serializer.serializeRelationship('authors', ['1', '2'], Serializer.schemas.authors.default, included);
       expect(serializedRelationshipData).to.be.instanceof(Array).to.have.lengthOf(2);
       expect(serializedRelationshipData[0]).to.have.property('type').to.eql('authors');
-      expect(serializedRelationshipData[0]).to.have.property('id').to.eql('1');
+      expect(serializedRelationshipData[0]).to.have.property('id').to.be.a('string').to.eql('1');
       expect(serializedRelationshipData[1]).to.have.property('type').to.eql('authors');
-      expect(serializedRelationshipData[1]).to.have.property('id').to.eql('2');
+      expect(serializedRelationshipData[1]).to.have.property('id').to.be.a('string').to.eql('2');
       expect(included).to.have.lengthOf(0);
+      done();
+    });
+
+    it('should return type of string for a to one unpopulated relationship with non string id', function(done) {
+      const included = [];
+      const serializedRelationshipData = Serializer.serializeRelationship('authors', 1, Serializer.schemas.authors.default, included);
+      expect(serializedRelationshipData).to.have.property('type').to.eql('authors');
+      expect(serializedRelationshipData).to.have.property('id').to.be.a('string').to.eql('1');
       done();
     });
 
@@ -215,7 +245,7 @@ describe('JSONAPISerializer', function() {
       expect(serializedRelationshipData).to.have.property('id').to.eql('1');
       expect(included).to.have.lengthOf(1);
       expect(included[0]).to.have.property('type', 'authors');
-      expect(included[0]).to.have.property('id', '1');
+      expect(included[0]).to.have.property('id', '1').to.be.a('string');
       expect(included[0]).to.have.property('attributes');
       expect(included[0].attributes).to.have.property('name', 'Author 1');
       expect(included[0].attributes).to.not.have.property('gender');
@@ -264,12 +294,12 @@ describe('JSONAPISerializer', function() {
       expect(serializedRelationships).to.have.property('author');
       expect(serializedRelationships.author).to.have.property('data');
       expect(serializedRelationships.author.data).to.have.property('type').to.eql('authors');
-      expect(serializedRelationships.author.data).to.have.property('id').to.eql('1');
+      expect(serializedRelationships.author.data).to.have.property('id').to.be.a('string').to.eql('1');
       expect(serializedRelationships.author).to.have.property('links').to.be.undefined;
       expect(serializedRelationships).to.have.property('comments');
       expect(serializedRelationships.comments).to.have.property('data').to.be.instanceof(Array).to.have.lengthOf(2);
       expect(serializedRelationships.comments.data[0]).to.have.property('type').to.eql('comments');
-      expect(serializedRelationships.comments.data[0]).to.have.property('id').to.eql('1');
+      expect(serializedRelationships.comments.data[0]).to.have.property('id').to.be.a('string').to.eql('1');
       expect(serializedRelationships.comments).to.have.property('links').to.be.undefined;
       done();
     });

@@ -77,7 +77,7 @@ describe('Examples', function() {
     expect(serializedData).to.have.property('data');
     expect(serializedData.data).to.be.instanceof(Array).to.have.lengthOf(2);
     expect(serializedData.data[0]).to.have.property('type').to.eql('article');
-    expect(serializedData.data[0]).to.have.property('id').to.eql('1');
+    expect(serializedData.data[0]).to.have.property('id').to.be.a('string').to.eql('1');
     expect(serializedData.data[0]).to.have.property('attributes');
     expect(serializedData.data[0].attributes).to.have.property('title');
     expect(serializedData.data[0].attributes).to.have.property('body');
@@ -95,16 +95,16 @@ describe('Examples', function() {
     expect(serializedData.data[0].relationships.tags).to.have.property('data');
     expect(serializedData.data[0].relationships.tags.data).to.be.instanceof(Array).to.have.lengthOf(2);
     expect(serializedData.data[0].relationships.tags.data[0]).to.have.property('type').to.eql('tag');
-    expect(serializedData.data[0].relationships.tags.data[0]).to.have.property('id');
+    expect(serializedData.data[0].relationships.tags.data[0]).to.have.property('id').to.be.a('string');
     expect(serializedData.data[0].relationships).to.have.property('photos');
     expect(serializedData.data[0].relationships.photos).to.have.property('data');
     expect(serializedData.data[0].relationships.photos.data).to.be.instanceof(Array).to.have.lengthOf(3);
     expect(serializedData.data[0].relationships.photos.data[0]).to.have.property('type').to.eql('photo');
-    expect(serializedData.data[0].relationships.photos.data[0]).to.have.property('id');
+    expect(serializedData.data[0].relationships.photos.data[0]).to.have.property('id').to.be.a('string');
     expect(serializedData.data[0].relationships).to.have.property('comments');
     expect(serializedData.data[0].relationships.comments.data).to.be.instanceof(Array).to.have.lengthOf(3);
     expect(serializedData.data[0].relationships.comments.data[0]).to.have.property('type').to.eql('comment');
-    expect(serializedData.data[0].relationships.comments.data[0]).to.have.property('id');
+    expect(serializedData.data[0].relationships.comments.data[0]).to.have.property('id').to.be.a('string');
     expect(serializedData.data[0]).to.have.property('links');
     expect(serializedData.data[0].links).to.have.property('self').to.eql('/articles/1');
     expect(serializedData).to.have.property('included');
