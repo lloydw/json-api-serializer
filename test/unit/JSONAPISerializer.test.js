@@ -3,6 +3,7 @@
 
 const expect = require('chai').expect;
 const _ = require('lodash');
+const ObjectID = require('bson-objectid');
 
 const JSONAPISerializer = require('../../');
 
@@ -225,6 +226,13 @@ describe('JSONAPISerializer', function() {
       const serializedRelationshipData = Serializer.serializeRelationship('authors', 1, Serializer.schemas.authors.default, included);
       expect(serializedRelationshipData).to.have.property('type').to.eql('authors');
       expect(serializedRelationshipData).to.have.property('id').to.be.a('string').to.eql('1');
+      done();
+    });
+
+    it('should return serialized relationship with unpopulated relationship with mongoDB BSON ObjectID', function(done) {
+      const serializedRelationshipData = Serializer.serializeRelationship('authors', new ObjectID(), Serializer.schemas.authors.default, []);
+      expect(serializedRelationshipData).to.have.property('type').to.eql('authors');
+      expect(serializedRelationshipData).to.have.property('id').to.be.a('string');
       done();
     });
 
