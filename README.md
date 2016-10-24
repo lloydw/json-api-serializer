@@ -35,6 +35,7 @@ Serializer.register(type, options);
 - **relationships** (optional): An object defining some relationships
     - relationship: The property in data to use as a relationship
         - **type**: The type to use for serializing the relationship (type need to be register)
+        - **alternativeKey** (optional): An alternative key to use if relationship key not exist (example: 'author_id' as an alternative key for 'author' relationship). See [issue #12](https://github.com/danivek/json-api-serializer/issues/12).
         - **schema** (optional): A custom schema for serializing the relationship. If no schema define, it use the default one.
         - **links** (optional): An *object* or a *function* that describes the links for the relationship. (If it is an object values can be string or function).
 - **convertCase** (optional): Case conversion for outputted data. Value can be : `kebab-case`, `snake_case`, `camelCase`

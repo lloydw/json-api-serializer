@@ -333,6 +333,32 @@ describe('JSONAPISerializer', function() {
       expect(serializedRelationships).to.have.property('article-authors');
       done();
     });
+
+    it('should return relationships with alternativeKey option if relationship key not exist', function(done) {
+      const included = [];
+      const Serializer = new JSONAPISerializer();
+
+      Serializer.register('article', {
+        relationships: {
+          author: {
+            type: 'people',
+            alternativeKey: 'author_id'
+          }
+        }
+      });
+      Serializer.register('people');
+
+      const serializedRelationships = Serializer.serializeRelationships({
+        id: '1',
+        author_id: '1'
+      }, Serializer.schemas.article.default, included);
+      expect(serializedRelationships).to.have.property('author');
+      expect(serializedRelationships.author).to.have.property('data');
+      expect(serializedRelationships.author.data).to.have.property('type').to.eql('people');
+      expect(serializedRelationships.author.data).to.have.property('id').to.be.a('string').to.eql('1');
+      expect(serializedRelationships.author).to.have.property('links').to.be.undefined;
+      done();
+    });
   });
 
   describe('serializeAttributes', function() {
@@ -453,6 +479,35 @@ describe('JSONAPISerializer', function() {
       expect(serializedAttributes).to.have.property('lastName');
       expect(serializedAttributes.articles[0]).to.have.property('createdAt');
       expect(serializedAttributes.address).to.have.property('zipCode');
+      done();
+    });
+
+    it('should not return alternativeKey option on relationships', function(done) {
+      const Serializer = new JSONAPISerializer();
+      Serializer.register('people', {});
+      Serializer.register('article', {
+        relationships: {
+          author: {
+            type: 'people',
+            alternativeKey: 'author_id'
+          }
+        }
+      });
+
+      const data = {
+        id: '1',
+        title: 'Nice article',
+        author_id: '1',
+        author: {
+          id: '1'
+        },
+      };
+
+      const serializedAttributes = Serializer.serializeAttributes(data, Serializer.schemas.article.default);
+      expect(serializedAttributes).to.not.have.property('id'); // No identifier
+      expect(serializedAttributes).to.not.have.property('author_id'); // No relationship alternativeKey
+      expect(serializedAttributes).to.not.have.property('author'); // No relationship key
+      expect(serializedAttributes).to.have.property('title');
       done();
     });
   });
