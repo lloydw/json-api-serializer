@@ -11,22 +11,20 @@ describe('Examples', function() {
   Serializer.register('article', {
     id: 'id',
     blacklist: ['updated'],
-    links: {
-      self: function(data) {
-        return '/articles/' + data.id;
+    links: function(data) {
+      return {
+        self: '/articles/' + data.id
       }
     },
     relationships: {
       author: {
         type: 'people',
-        links: {
-          self: function(data) {
-            return '/articles/' + data.id + '/relationships/author';
-          },
-          related: function(data) {
-            return '/articles/' + data.id + '/author';
+        links: function(data) {
+          return {
+            self: '/articles/' + data.id + '/relationships/author',
+            related: '/articles/' + data.id + '/author'
           }
-        },
+        }
       },
       tags: {
         type: 'tag'
@@ -39,9 +37,9 @@ describe('Examples', function() {
         schema: 'only-body'
       }
     },
-    topLevelMeta: {
-      count: function(extraOptions) {
-        return extraOptions.count;
+    topLevelMeta: function(extraOptions) {
+      return {
+        count: extraOptions.count
       }
     },
     topLevelLinks: {
@@ -50,9 +48,9 @@ describe('Examples', function() {
   });
   Serializer.register('people', {
     id: 'id',
-    links: {
-      self: function(data) {
-        return '/peoples/' + data.id;
+    links: function(data) {
+      return {
+        self: '/peoples/' + data.id
       }
     }
   });

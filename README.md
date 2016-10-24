@@ -26,18 +26,18 @@ Serializer.register(type, options);
 ```
 **Available options :**
 
-- *id* (optional): The attributes to use as the reference. Default = 'id'.
-- *blacklist* (optional): An array of blacklisted attributes. Default = [].
-- *whitelist* (optional): An array of whitelisted attributes. Default = [].
-- *links* (optional): An object that describes the links inside data. Values can be string or function (see examples below).
-- *topLevelMeta* (optional): An object that describes the top-level meta. Values can be string or function (see examples below).
-- *topLevelLinks* (optional): An object that describes the top-level links. Values can be string or function (see examples below).
-- *relationships* (optional): An object defining some relationships
+- **id** (optional): The attributes to use as the reference. Default = 'id'.
+- **blacklist** (optional): An array of blacklisted attributes. Default = [].
+- **whitelist** (optional): An array of whitelisted attributes. Default = [].
+- **links** (optional): An *object* or a *function* that describes the links inside data. (If it is an object values can be string or function).
+- **topLevelMeta** (optional): An *object* or a *function* that describes the top-level meta. (If it is an object values can be string or function).
+- **topLevelLinks** (optional): An *object* or a *function* that describes the top-level links. (If it is an object values can be string or function).
+- **relationships** (optional): An object defining some relationships
     - relationship: The property in data to use as a relationship
-        - *type*: The type to use for serializing the relationship (type need to be register)
-        - *schema* (optional): A custom schema for serializing the relationship. If no schema define, it use the default one.
-        - *links* (optional): An object that describes the links for the relationship. Values can be string or function (see examples below).
-- *convertCase* (optional): Case conversion for outputted data. Value can be : `kebab-case`, `snake_case`, `camelCase`
+        - **type**: The type to use for serializing the relationship (type need to be register)
+        - **schema** (optional): A custom schema for serializing the relationship. If no schema define, it use the default one.
+        - **links** (optional): An *object* or a *function* that describes the links for the relationship. (If it is an object values can be string or function).
+- **convertCase** (optional): Case conversion for outputted data. Value can be : `kebab-case`, `snake_case`, `camelCase`
 
 ## Usage
 
@@ -85,7 +85,7 @@ var Serializer = new JSONAPISerializer();
 Serializer.register('article', {
   id: 'id', // The attributes to use as the reference. Default = 'id'.
   blacklist: ['updated'], // An array of blacklisted attributes. Default = []
-  links: { // An object that describe links. Default = {}
+  links: { // An object or a function that describes links.
     self: function(data) { // Can be a function or a string value ex: { self: '/articles/1'}
       return '/articles/' + data.id;
     }
@@ -93,32 +93,31 @@ Serializer.register('article', {
   relationships: { // An object defining some relationships.
     author: {
       type: 'people', // The type of the resource
-      links: { // Relationships links
-        self: function(data) {
-          return '/articles/' + data.id + '/relationships/author';
-        },
-        related: function(data) {
-          return '/articles/' + data.id + '/author';
+      links: function(data) { // An object or a function that describes Relationships links
+        return {
+          self: '/articles/' + data.id + '/relationships/author',
+          related: '/articles/' + data.id + '/author'
         }
       },
     },
     tags: {
-      type: 'tag' // The type of the resource
+      type: 'tag'
     },
     photos: {
-      type: 'photo' // The type of the resource
+      type: 'photo'
     },
     comments: {
-      type: 'comment', // The type of the resource
+      type: 'comment',
       schema: 'only-body' // A custom schema
     }
   },
-  topLevelMeta: { // An object that describe top level meta. Default = {}
-    count: function(extraOptions) { // Can be a function (with extra options argument) or a string value
-      return extraOptions.count;
+  topLevelMeta: function(extraOptions) { // An object or a function that describes top level meta.
+    return {
+      count: extraOptions.count,
+      total: extraOptions.total
     }
   },
-  topLevelLinks: { // An object that describe top level links. Default = {}
+  topLevelLinks: { // An object or a function that describes top level links.
     self: '/articles' // Can be a function (with extra options argument) or a string value
   }
 });

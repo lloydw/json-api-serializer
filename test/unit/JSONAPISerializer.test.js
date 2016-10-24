@@ -505,6 +505,19 @@ describe('JSONAPISerializer', function() {
       expect(links).to.have.property('self').to.eql('/articles/1');
       done();
     });
+
+    it('should process options function', function(done) {
+      const optionsFn = function(data) {
+        return {
+          self: '/articles/' + data.id
+        }
+      };
+      const links = Serializer.processOptionsValues({
+        id: '1',
+      }, optionsFn);
+      expect(links).to.have.property('self').to.eql('/articles/1');
+      done();
+    });
   });
 
   describe('serialize', function() {
