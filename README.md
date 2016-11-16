@@ -1,7 +1,7 @@
 # json-api-serializer
 [![Build Status](https://travis-ci.org/danivek/json-api-serializer.svg?branch=master)](https://travis-ci.org/danivek/json-api-serializer)
 [![Coverage Status](https://coveralls.io/repos/github/danivek/json-api-serializer/badge.svg?branch=master)](https://coveralls.io/github/danivek/json-api-serializer?branch=master)
-[![npm](https://img.shields.io/npm/v/json-api-serializer.svg?maxAge=2592000)](https://www.npmjs.org/package/json-api-serializer)
+[![npm](https://img.shields.io/npm/v/json-api-serializer.svg)](https://www.npmjs.org/package/json-api-serializer)
 
 A Node.js framework agnostic library for serializing your data to [JSON API](http://jsonapi.org/) compliant responses (a specification for building APIs in JSON).
 
@@ -38,11 +38,13 @@ Serializer.register(type, options);
         - **alternativeKey** (optional): An alternative key to use if relationship key not exist (example: 'author_id' as an alternative key for 'author' relationship). See [issue #12](https://github.com/danivek/json-api-serializer/issues/12).
         - **schema** (optional): A custom schema for serializing the relationship. If no schema define, it use the default one.
         - **links** (optional): An *object* or a *function* that describes the links for the relationship. (If it is an object values can be string or function).
-- **convertCase** (optional): Case conversion for outputted data. Value can be : `kebab-case`, `snake_case`, `camelCase`
+- **convertCase** (optional): Case conversion for serializing data. Value can be : `kebab-case`, `snake_case`, `camelCase`
+- **unconvertCase** (optional): Case conversion for deserializing data. Value can be : `kebab-case`, `snake_case`, `camelCase`
+
 
 ## Usage
 
-input data (can be a simple object or an array of objects)
+input data (can be an object or an array of objects)
 ```javascript
 // Data
 var data = {
@@ -77,6 +79,7 @@ var data = {
 }
 ```
 
+### Register
 Register your resources types :
 ```javascript
 var JSONAPISerializer = require('json-api-serializer');
@@ -148,6 +151,8 @@ Serializer.register('comment', 'only-body', {
   id: '_id',
 });
 ```
+
+### Serialize
 
 Serialize it with the corresponding resource type, data and optional extra options :
 
@@ -260,6 +265,56 @@ The output data will be :
 ```
 Some others examples are available in [ tests folders](https://github.com/danivek/json-api-serializer/blob/master/test/)
 
+### Deserialize
+
+```javascript
+var data = {
+  data: {
+    type: 'article',
+    id: '1',
+    attributes: {
+      title: 'JSON API paints my bikeshed!',
+      body: 'The shortest article. Ever.',
+      created: '2015-05-22T14:56:29.000Z'
+    },
+    relationships: {
+      author: {
+        data: {
+          type: 'people',
+          id: '1'
+        }
+      },
+      comments: {
+        data: [{
+          type: 'comment',
+          id: '1'
+        }, {
+          type: 'comment',
+          id: '2'
+        }]
+      }
+    }
+  }
+};
+
+Serializer.deserialize('article', data);
+```
+
+```JSON
+{
+  "id": "1",
+  "title": "JSON API paints my bikeshed!",
+  "body": "The shortest article. Ever.",
+  "created": "2015-05-22T14:56:29.000Z",
+  "author": "1",
+  "comments": [
+    "1",
+    "2"
+  ]
+}
+```
+
+
 ## Custom schemas
 
 It is possible to define multiple custom schemas for a resource type :
@@ -268,10 +323,11 @@ It is possible to define multiple custom schemas for a resource type :
 Serializer.register(type, 'customSchema', options);
 ```
 
-If you want to apply this schema on the primary data :
+Then you can apply this schema on the primary data when serialize or deserialize :
 
 ```javascript
 Serializer.serialize('article', data, 'customSchema', {count: 2});
+Serializer.deserialize('article', jsonapiData, 'customSchema');
 ```
 
 Or if you want to apply this schema on a relationship data, define this schema on relationships options with the key `schema` :

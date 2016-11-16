@@ -623,9 +623,9 @@ describe('JSONAPISerializer', function() {
       });
 
       const data = {
-        id: "1",
-        title: "JSON API paints my bikeshed!",
-        body: "The shortest article. Ever."
+        id: '1',
+        title: 'JSON API paints my bikeshed!',
+        body: 'The shortest article. Ever.'
       };
 
       const serializedData = Serializer.serialize('articles', data, 'only-title');
@@ -648,6 +648,159 @@ describe('JSONAPISerializer', function() {
     it('should throw an error if custom schema as not been registered', function(done) {
       expect(function() {
         Serializer.serialize('articles', {}, 'custom');
+      }).to.throw(Error, 'No schema custom registered for articles');
+      done();
+    });
+  });
+
+  describe('deserialize', function() {
+    it('should deserialize data with relationships', function(done) {
+      const Serializer = new JSONAPISerializer();
+      Serializer.register('articles', {});
+
+      const data = {
+        data: {
+          type: 'article',
+          id: '1',
+          attributes: {
+            title: 'JSON API paints my bikeshed!',
+            body: 'The shortest article. Ever.',
+            created: '2015-05-22T14:56:29.000Z'
+          },
+          relationships: {
+            author: {
+              data: {
+                type: 'people',
+                id: '1'
+              }
+            },
+            comments: {
+              data: [{
+                type: 'comment',
+                id: '1'
+              }, {
+                type: 'comment',
+                id: '2'
+              }]
+            }
+          }
+        }
+      };
+
+      const deserializedData = Serializer.deserialize('articles', data);
+      expect(deserializedData).to.have.property('id');
+      expect(deserializedData).to.have.property('title');
+      expect(deserializedData).to.have.property('body');
+      expect(deserializedData).to.have.property('created');
+      expect(deserializedData).to.have.property('author', '1');
+      expect(deserializedData).to.have.property('comments').to.be.instanceof(Array).to.eql(['1', '2']);
+      done();
+    });
+
+    it('should deserialize with \'id\' options', function(done) {
+      const Serializer = new JSONAPISerializer();
+      Serializer.register('articles', {
+        id: '_id'
+      });
+
+      const data = {
+        data: {
+          type: 'article',
+          id: '1',
+          attributes: {
+            title: 'JSON API paints my bikeshed!',
+            body: 'The shortest article. Ever.',
+            created: '2015-05-22T14:56:29.000Z'
+          }
+        }
+      };
+
+      const deserializedData = Serializer.deserialize('articles', data);
+      expect(deserializedData).to.have.property('_id');
+      expect(deserializedData).to.not.have.property('id');
+      done();
+    });
+
+    it('should deserialize with \'alternativeKey\' options', function(done) {
+      const Serializer = new JSONAPISerializer();
+      Serializer.register('articles', {
+        relationships: {
+          author: {
+            type: 'people',
+            alternativeKey: 'author_id'
+          }
+        }
+      });
+
+      const data = {
+        data: {
+          type: 'article',
+          id: '1',
+          attributes: {
+            title: 'JSON API paints my bikeshed!',
+            body: 'The shortest article. Ever.',
+            created: '2015-05-22T14:56:29.000Z'
+          },
+          relationships: {
+            author: {
+              data: {
+                type: 'people',
+                id: '1'
+              }
+            }
+          }
+        }
+      };
+
+      const deserializedData = Serializer.deserialize('articles', data);
+      expect(deserializedData).to.have.property('author_id');
+      expect(deserializedData).to.not.property('author');
+      done();
+    });
+
+    it('should deserialize with \'unconvertCase\' options', function(done) {
+      const Serializer = new JSONAPISerializer();
+      Serializer.register('articles', {
+        unconvertCase: 'snake_case'
+      });
+
+      const data = {
+        data: {
+          type: 'article',
+          id: '1',
+          attributes: {
+            createdAt: '2015-05-22T14:56:29.000Z'
+          },
+          relationships: {
+            articleAuthor: {
+              data: {
+                type: 'people',
+                id: '1'
+              }
+            }
+          }
+        }
+      };
+
+      const deserializedData = Serializer.deserialize('articles', data);
+      expect(deserializedData).to.have.property('created_at');
+      expect(deserializedData).to.have.property('article_author');
+      done();
+    });
+
+    it('should throw an error if type as not been registered', function(done) {
+      expect(function() {
+        const Serializer = new JSONAPISerializer();
+        Serializer.deserialize('authors', {});
+      }).to.throw(Error, 'No type registered for authors');
+      done();
+    });
+
+    it('should throw an error if custom schema as not been registered', function(done) {
+      expect(function() {
+        const Serializer = new JSONAPISerializer();
+        Serializer.register('articles', {});
+        Serializer.deserialize('articles', {}, 'custom');
       }).to.throw(Error, 'No schema custom registered for articles');
       done();
     });
