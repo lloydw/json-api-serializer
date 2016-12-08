@@ -47,7 +47,7 @@ Serializer.register(type, options);
 input data (can be an object or an array of objects)
 ```javascript
 // Data
-var data = {
+var data = [{
   id: "1",
   title: "JSON API paints my bikeshed!",
   body: "The shortest article. Ever.",
@@ -76,7 +76,7 @@ var data = {
     body: "Awesome",
     created: "2015-09-15T18:42:12.475Z"
   }]
-}
+}]
 ```
 
 ### Register
@@ -266,6 +266,8 @@ The output data will be :
 Some others examples are available in [ tests folders](https://github.com/danivek/json-api-serializer/blob/master/test/)
 
 ### Deserialize
+
+input data (can be an simple object or an array of objects)
 
 ```javascript
 var data = {
