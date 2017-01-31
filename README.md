@@ -24,7 +24,7 @@ var JSONAPISerializer = require('json-api-serializer');
 var Serializer = new JSONAPISerializer();
 Serializer.register(type, options);
 ```
-**Available options :**
+**Serialization options :**
 
 - **id** (optional): The attributes to use as the reference. Default = 'id'.
 - **blacklist** (optional): An array of blacklisted attributes. Default = [].
@@ -39,7 +39,12 @@ Serializer.register(type, options);
         - **schema** (optional): A custom schema for serializing the relationship. If no schema define, it use the default one.
         - **links** (optional): An *object* or a *function* that describes the links for the relationship. (If it is an object values can be string or function).
 - **convertCase** (optional): Case conversion for serializing data. Value can be : `kebab-case`, `snake_case`, `camelCase`
+
+**Deserialization options :**
+
 - **unconvertCase** (optional): Case conversion for deserializing data. Value can be : `kebab-case`, `snake_case`, `camelCase`
+- **blacklistOnDeserialize** (optional): An array of blacklisted attributes. Default = [].
+- **whitelistOnDeserialize** (optional): An array of whitelisted attributes. Default = [].
 
 
 ## Usage
