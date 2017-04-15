@@ -367,6 +367,51 @@ describe('JSONAPISerializer', function() {
       expect(serializedRelationships.author).to.have.property('links').to.be.undefined;
       done();
     });
+
+    it('should throw an error if type as not been registered on a relationship', function(done) {
+      const included = [];
+      const Serializer = new JSONAPISerializer();
+
+      Serializer.register('article', {
+        relationships: {
+          author: {
+            type: 'people',
+          }
+        }
+      });
+
+      expect(function() {
+        Serializer.serializeRelationships({
+          id: '1',
+          author: '1'
+        }, Serializer.schemas.article.default, included);
+      }).to.throw(Error, 'No type registered for "people" on "author" relationship');
+      done();
+    });
+
+    it('should throw an error if custom schema as not been registered on a relationship', function(done) {
+      const included = [];
+      const Serializer = new JSONAPISerializer();
+
+      Serializer.register('article', {
+        relationships: {
+          author: {
+            type: 'people',
+            schema: 'custom'
+          }
+        }
+      });
+
+      Serializer.register('people');
+
+      expect(function() {
+        Serializer.serializeRelationships({
+          id: '1',
+          author: '1'
+        }, Serializer.schemas.article.default, included);
+      }).to.throw(Error, 'No schema "custom" registered for type "people" on "author" relationship');
+      done();
+    });
   });
 
   describe('serializeAttributes', function() {
