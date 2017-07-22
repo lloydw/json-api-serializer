@@ -45,6 +45,9 @@ Serializer.register(type, options);
         - **links** (optional): Describes the links for the relationship. It can be:
             - An *object* (values can be string or function).
             - A *function* with one argument `function(data) { ... }` or with two arguments `function(data, extraData) { ... }`
+        - **meta** (optional): Describes meta that contains non-standard meta-information about the relationship. It can be:
+            - An *object* (values can be string or function).
+            - A *function* with one argument `function(data) { ... }` or with two arguments `function(data, extraData) { ... }`
 - **convertCase** (optional): Case conversion for serializing data. Value can be : `kebab-case`, `snake_case`, `camelCase`
 
 **Deserialization options:**

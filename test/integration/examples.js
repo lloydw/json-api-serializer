@@ -25,7 +25,10 @@ describe('Examples', function() {
             self: '/articles/' + data.id + '/relationships/author',
             related: '/articles/' + data.id + '/author'
           }
-        }
+        },
+        meta: (data) => ({
+          id: data.author
+        })
       },
       tags: {
         type: 'tag'
@@ -90,6 +93,7 @@ describe('Examples', function() {
     expect(serializedData.data[0].relationships.author).to.have.property('links');
     expect(serializedData.data[0].relationships.author.links).to.have.property('self').to.eql('/articles/1/relationships/author');
     expect(serializedData.data[0].relationships.author.links).to.have.property('related').to.eql('/articles/1/author');
+    expect(serializedData.data[0].relationships.author.meta).to.have.property('id');
     expect(serializedData.data[0].relationships).to.have.property('tags');
     expect(serializedData.data[0].relationships.tags).to.have.property('data');
     expect(serializedData.data[0].relationships.tags.data).to.be.instanceof(Array).to.have.lengthOf(2);
