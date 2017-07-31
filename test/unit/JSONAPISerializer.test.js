@@ -1247,6 +1247,42 @@ describe('JSONAPISerializer', function() {
       done();
     });
 
+    it('should deserialize with missing included relationship', function(done) {
+      const Serializer = new JSONAPISerializer();
+      Serializer.register('articles', {
+        relationships: {
+          author: {
+            type: 'people',
+          }
+        }
+      });
+      Serializer.register('people', {});
+
+      const data = {
+        data: {
+          type: 'article',
+          id: '1',
+          attributes: {
+            title: 'JSON API paints my bikeshed!',
+          },
+          relationships: {
+            author: {
+              data: {
+                type: 'people',
+                id: '1'
+              }
+            }
+          }
+        },
+        included: []
+      }
+
+      const deserializedData = Serializer.deserialize('articles', data);
+      // People with id '1' is missing in included
+      expect(deserializedData).to.have.property('author').to.eql('1');
+      done();
+    });
+
     it('should deserialize an array of data', function(done) {
       const Serializer = new JSONAPISerializer();
       Serializer.register('articles', {});
@@ -1410,6 +1446,36 @@ describe('JSONAPISerializer', function() {
       const deserializedData = Serializer.deserialize('articles', data);
       expect(deserializedData).to.have.property('body');
       expect(deserializedData).to.not.have.property('title');
+      done();
+    });
+
+    it('should deserialize with \'links\' and \'meta\' properties', function(done) {
+      const Serializer = new JSONAPISerializer();
+      Serializer.register('articles', {
+        id: '_id'
+      });
+
+      const data = {
+        data: {
+          type: 'article',
+          id: '1',
+          attributes: {
+            title: 'JSON API paints my bikeshed!',
+            body: 'The shortest article. Ever.',
+            created: '2015-05-22T14:56:29.000Z'
+          },
+          links: {
+            self: '/articles/1'
+          },
+          meta: {
+            metadata: 'test'
+          }
+        }
+      };
+
+      const deserializedData = Serializer.deserialize('articles', data);
+      expect(deserializedData).to.have.property('links').to.eql(data.data.links);
+      expect(deserializedData).to.have.property('meta').to.eql(data.data.meta);
       done();
     });
 
