@@ -137,6 +137,16 @@ describe('JSONAPISerializer', function() {
       expect(serializedData).to.have.property('id').to.be.a('string').to.eql('1');
       done();
     });
+
+    it('should return serialized data without id attribute', function(done) {
+      const singleData = {
+        body: 'test',
+      };
+      const serializedData = Serializer.serializeData('articles', singleData, defaultOptions);
+      expect(serializedData).to.have.property('type').to.eql('articles');
+      expect(serializedData.id).to.be.undefined;
+      done();
+    });
   });
 
   describe('serializeMixedData', function() {
