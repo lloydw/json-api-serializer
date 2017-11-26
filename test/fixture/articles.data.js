@@ -17,7 +17,15 @@ module.exports = [{
   comments: [{
     _id: "1",
     body: "First !",
-    created: "2015-08-14T18:42:16.475Z"
+    created: "2015-08-14T18:42:16.475Z",
+    user: {
+      id: "1",
+      firstName: "Kaley",
+      lastName: "Maggio",
+      email: "Kaley-Maggio@example.com",
+      age: "80",
+      gender: "male"
+    }
   }, {
     _id: "2",
     body: "I Like !",

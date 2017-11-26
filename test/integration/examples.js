@@ -66,13 +66,20 @@ describe('Examples', function() {
   });
   Serializer.register('comment', 'only-body', {
     id: '_id',
-    whitelist: ['body']
+    whitelist: ['body'],
+    relationships: {
+      user: {
+        type: 'people'
+      }
+    }
   });
 
   it('should serialize articles data', function(done) {
     var serializedData = Serializer.serialize('article', articlesData, {
+      include: ['comments.user'],
       count: 2
     });
+    console.log(JSON.stringify(serializedData, null, 2));
     expect(serializedData).to.have.property('jsonapi').to.have.property('version');
     expect(serializedData).to.have.property('meta').to.have.property('count').to.eql(2);
     expect(serializedData).to.have.property('links').to.have.property('self').to.eql('/articles');
@@ -111,7 +118,7 @@ describe('Examples', function() {
     expect(serializedData.data[0]).to.have.property('links');
     expect(serializedData.data[0].links).to.have.property('self').to.eql('/articles/1');
     expect(serializedData).to.have.property('included');
-    expect(serializedData.included).to.be.instanceof(Array).to.have.lengthOf(10);
+    expect(serializedData.included).to.be.instanceof(Array).to.have.lengthOf(7);
     var includedAuhor1 = _.find(serializedData.included, {
       'type': 'people',
       'id': '1'
@@ -136,9 +143,10 @@ describe('Examples', function() {
 
   it('should serialize articles data (async)', () => {
     var expected = Serializer.serialize('article', articlesData, {
+      include: ['comments.user'],
       count: 2
     });
-    return Serializer.serializeAsync('article', articlesData, { count: 2 })
+    return Serializer.serializeAsync('article', articlesData, { include: ['comments.user'], count: 2 })
       .then((actual) => {
         expect(actual).to.deep.equal(expected);
       })
