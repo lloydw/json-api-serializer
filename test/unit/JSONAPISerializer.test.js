@@ -263,9 +263,9 @@ describe('JSONAPISerializer', function() {
       },
     });
 
-    it('should return undefined for an undefined relationship data', function(done) {
+    it('should return null for an undefined relationship data', function(done) {
       const serializedRelationshipData = Serializer.serializeRelationship('articles', undefined);
-      expect(serializedRelationshipData).to.eql(undefined);
+      expect(serializedRelationshipData).to.eql(null);
       done();
     });
 
