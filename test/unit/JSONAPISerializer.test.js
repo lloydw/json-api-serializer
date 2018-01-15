@@ -407,6 +407,22 @@ describe('JSONAPISerializer', function() {
       done();
     });
 
+    it('should return at least data null if no links, data, or meta are deduce', function(done) {
+      const included = [];
+      const serializedRelationships = Serializer.serializeRelationships({
+        id: '1',
+      }, Serializer.schemas.articles.default, included);
+      expect(serializedRelationships).to.eql({
+        author: {
+          data: null
+        },
+        comments: {
+          data: null
+        }
+      })
+      done();
+    });
+
     it('should return relationships for author and comments', function(done) {
       const included = [];
       const serializedRelationships = Serializer.serializeRelationships({
