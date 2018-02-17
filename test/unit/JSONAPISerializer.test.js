@@ -1355,7 +1355,7 @@ describe('JSONAPISerializer', function() {
       done();
     });
 
-    it('should deserialize with \'alternativeKey\' options', function(done) {
+    it('should deserialize with \'alternativeKey\' option', function(done) {
       const Serializer = new JSONAPISerializer();
       Serializer.register('articles', {
         relationships: {
@@ -1389,6 +1389,42 @@ describe('JSONAPISerializer', function() {
       const deserializedData = Serializer.deserialize('articles', data);
       expect(deserializedData).to.have.property('author_id');
       expect(deserializedData).to.not.property('author');
+      done();
+    });
+
+    it('should deserialize with \'alternativeKey\' option as a path', function(done) {
+      const Serializer = new JSONAPISerializer();
+      Serializer.register('articles', {
+        relationships: {
+          author: {
+            type: 'people',
+            alternativeKey: 'author.id'
+          }
+        }
+      });
+
+      const data = {
+        data: {
+          type: 'article',
+          id: '1',
+          attributes: {
+            title: 'JSON API paints my bikeshed!',
+            body: 'The shortest article. Ever.',
+            created: '2015-05-22T14:56:29.000Z'
+          },
+          relationships: {
+            author: {
+              data: {
+                type: 'people',
+                id: '1'
+              }
+            }
+          }
+        }
+      };
+
+      const deserializedData = Serializer.deserialize('articles', data);
+      expect(deserializedData.author).to.have.property('id');
       done();
     });
 

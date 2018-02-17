@@ -40,7 +40,7 @@ Serializer.register(type, options);
 - **relationships** (optional): An object defining some relationships
     - relationship: The property in data to use as a relationship
         - **type**: The type to use for serializing the relationship (type need to be register)
-        - **alternativeKey** (optional): An alternative key to use if relationship key not exist (example: 'author_id' as an alternative key for 'author' relationship). See [issue #12](https://github.com/danivek/json-api-serializer/issues/12).
+        - **alternativeKey** (optional): An alternative key (string or path) to use if relationship key not exist (example: 'author_id' as an alternative key for 'author' relationship). See [issue #12](https://github.com/danivek/json-api-serializer/issues/12).
         - **schema** (optional): A custom schema for serializing the relationship. If no schema define, it use the default one.
         - **links** (optional): Describes the links for the relationship. It can be:
             - An *object* (values can be string or function).
