@@ -1136,15 +1136,6 @@ describe('JSONAPISerializer', function() {
             },
             nullRelationship: {
               data: null
-            },
-            malformedRelationship: {
-              data: 'test'
-            },
-            falsyIdRelationship: {
-              data: {
-                type: 'stuff',
-                id: ''
-              }
             }
           }
         }
@@ -1159,8 +1150,6 @@ describe('JSONAPISerializer', function() {
       expect(deserializedData).to.have.property('comments').to.be.instanceof(Array).to.eql(['1', '2']);
       expect(deserializedData).to.have.property('emptyArray').to.eql([]);
       expect(deserializedData).to.have.property('nullRelationship').to.eql(null);
-      expect(deserializedData).to.not.have.property('malformedRelationship');
-      expect(deserializedData).to.have.property('falsyIdRelationship').to.eql('');
       done();
     });
 
