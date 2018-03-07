@@ -1142,6 +1142,9 @@ describe('JSONAPISerializer', function() {
                 type: 'stuff',
                 id: ''
               }
+            },
+            noDataRelationship: {
+              id: '1'
             }
           }
         }
@@ -1157,6 +1160,7 @@ describe('JSONAPISerializer', function() {
       expect(deserializedData).to.have.property('emptyArray').to.eql([]);
       expect(deserializedData).to.have.property('nullRelationship').to.eql(null);
       expect(deserializedData).to.have.property('falsyIdRelationship').to.eql('');
+      expect(deserializedData).to.not.have.property('noDataRelationship');
       done();
     });
 
