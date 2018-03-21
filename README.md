@@ -334,7 +334,14 @@ var data = {
   }
 };
 
+// Synchronously (blocking)
 Serializer.deserialize('article', data);
+
+// Asynchronously (non-blocking)
+Serializer.deserializeAsync('article', data)
+  .then((result) => {
+    ...
+  });
 ```
 
 ```JSON
