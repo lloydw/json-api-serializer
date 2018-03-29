@@ -1,181 +1,203 @@
 # json-api-serializer
+
 [![Build Status](https://travis-ci.org/danivek/json-api-serializer.svg?branch=master)](https://travis-ci.org/danivek/json-api-serializer)
 [![Coverage Status](https://coveralls.io/repos/github/danivek/json-api-serializer/badge.svg?branch=master)](https://coveralls.io/github/danivek/json-api-serializer?branch=master)
 [![npm](https://img.shields.io/npm/v/json-api-serializer.svg)](https://www.npmjs.org/package/json-api-serializer)
 
 A Node.js framework agnostic library for serializing your data to [JSON API](http://jsonapi.org/) compliant responses (a specification for building APIs in JSON).
 
-***Why another library for serializing data to JSON API ?***
+**_Why another library for serializing data to JSON API ?_**
 
 Simply because others libraries are not as flexible as i need.
 
 ## Installation
+
 ```bash
 npm install --save json-api-serializer
 ```
 
 ## Documentation
 
-#### Register
+### Register
 
 ```javascript
-var JSONAPISerializer = require('json-api-serializer');
+var JSONAPISerializer = require("json-api-serializer");
 var Serializer = new JSONAPISerializer();
 Serializer.register(type, options);
 ```
+
 **Serialization options:**
 
-- **id** (optional): The key to use as the reference. Default = 'id'.
-- **blacklist** (optional): An array of blacklisted attributes. Default = [].
-- **whitelist** (optional): An array of whitelisted attributes. Default = [].
-- **jsonapiObject** (optional): Enable/Disable [JSON API Object](http://jsonapi.org/format/#document-jsonapi-object). Default = true.
-- **links** (optional): Describes the links inside data. It can be:
-    - An *object* (values can be string or function).
-    - A *function* with one argument `function(data) { ... }` or with two arguments `function(data, extraData) { ... }`
-- **topLevelMeta** (optional): Describes the top-level meta. It can be:
-    - An *object* (values can be string or function).
-    - A *function* with one argument `function(extraData) { ... }` or with two arguments `function(data, extraData) { ... }`
-- **topLevelLinks** (optional): Describes the top-level links. It can be:
-    - An *object* (values can be string or function).
-    - A *function* with one argument `function(extraData) { ... }` or with two arguments `function(data, extraData) { ... }`
-- **relationships** (optional): An object defining some relationships
-    - relationship: The property in data to use as a relationship
-        - **type**: The type to use for serializing the relationship (type need to be register)
-        - **alternativeKey** (optional): An alternative key (string or path) to use if relationship key not exist (example: 'author_id' as an alternative key for 'author' relationship). See [issue #12](https://github.com/danivek/json-api-serializer/issues/12).
-        - **schema** (optional): A custom schema for serializing the relationship. If no schema define, it use the default one.
-        - **links** (optional): Describes the links for the relationship. It can be:
-            - An *object* (values can be string or function).
-            - A *function* with one argument `function(data) { ... }` or with two arguments `function(data, extraData) { ... }`
-        - **meta** (optional): Describes meta that contains non-standard meta-information about the relationship. It can be:
-            - An *object* (values can be string or function).
-            - A *function* with one argument `function(data) { ... }` or with two arguments `function(data, extraData) { ... }`
-- **convertCase** (optional): Case conversion for serializing data. Value can be : `kebab-case`, `snake_case`, `camelCase`
+* **id** (optional): The key to use as the reference. Default = 'id'.
+* **blacklist** (optional): An array of blacklisted attributes. Default = [].
+* **whitelist** (optional): An array of whitelisted attributes. Default = [].
+* **jsonapiObject** (optional): Enable/Disable [JSON API Object](http://jsonapi.org/format/#document-jsonapi-object). Default = true.
+* **links** (optional): Describes the links inside data. It can be:
+  * An _object_ (values can be string or function).
+  * A _function_ with one argument `function(data) { ... }` or with two arguments `function(data, extraData) { ... }`
+* **topLevelMeta** (optional): Describes the top-level meta. It can be:
+  * An _object_ (values can be string or function).
+  * A _function_ with one argument `function(extraData) { ... }` or with two arguments `function(data, extraData) { ... }`
+* **topLevelLinks** (optional): Describes the top-level links. It can be:
+  * An _object_ (values can be string or function).
+  * A _function_ with one argument `function(extraData) { ... }` or with two arguments `function(data, extraData) { ... }`
+* **relationships** (optional): An object defining some relationships
+  * relationship: The property in data to use as a relationship
+    * **type**: The type to use for serializing the relationship (type need to be register)
+    * **alternativeKey** (optional): An alternative key (string or path) to use if relationship key not exist (example: 'author_id' as an alternative key for 'author' relationship). See [issue #12](https://github.com/danivek/json-api-serializer/issues/12).
+    * **schema** (optional): A custom schema for serializing the relationship. If no schema define, it use the default one.
+    * **links** (optional): Describes the links for the relationship. It can be:
+      * An _object_ (values can be string or function).
+      * A _function_ with one argument `function(data) { ... }` or with two arguments `function(data, extraData) { ... }`
+    * **meta** (optional): Describes meta that contains non-standard meta-information about the relationship. It can be:
+      * An _object_ (values can be string or function).
+      * A _function_ with one argument `function(data) { ... }` or with two arguments `function(data, extraData) { ... }`
+* **convertCase** (optional): Case conversion for serializing data. Value can be : `kebab-case`, `snake_case`, `camelCase`
 
 **Deserialization options:**
 
-- **unconvertCase** (optional): Case conversion for deserializing data. Value can be : `kebab-case`, `snake_case`, `camelCase`
-- **blacklistOnDeserialize** (optional): An array of blacklisted attributes. Default = [].
-- **whitelistOnDeserialize** (optional): An array of whitelisted attributes. Default = [].
+* **unconvertCase** (optional): Case conversion for deserializing data. Value can be : `kebab-case`, `snake_case`, `camelCase`
+* **blacklistOnDeserialize** (optional): An array of blacklisted attributes. Default = [].
+* **whitelistOnDeserialize** (optional): An array of whitelisted attributes. Default = [].
 
 **Global options:**
 
 To avoid repeating the same options for each type, it's possible to add global options on `JSONAPISerializer` instance:
 
 ```javascript
-var JSONAPISerializer = require('json-api-serializer');
+var JSONAPISerializer = require("json-api-serializer");
 var Serializer = new JSONAPISerializer({
-  convertCase: 'kebab-case',
-  unconvertCase: 'camelCase'
+  convertCase: "kebab-case",
+  unconvertCase: "camelCase"
 });
 ```
 
 ## Usage
 
 input data (can be an object or an array of objects)
+
 ```javascript
 // Data
-var data = [{
-  id: "1",
-  title: "JSON API paints my bikeshed!",
-  body: "The shortest article. Ever.",
-  created: "2015-05-22T14:56:29.000Z",
-  updated: "2015-05-22T14:56:28.000Z",
-  author: {
+var data = [
+  {
     id: "1",
-    firstName: "Kaley",
-    lastName: "Maggio",
-    email: "Kaley-Maggio@example.com",
-    age: "80",
-    gender: "male"
-  },
-  tags: ["1", "2"],
-  photos: ["ed70cf44-9a34-4878-84e6-0c0e4a450cfe", "24ba3666-a593-498c-9f5d-55a4ee08c72e", "f386492d-df61-4573-b4e3-54f6f5d08acf"],
-  comments: [{
-    _id: "1",
-    body: "First !",
-    created: "2015-08-14T18:42:16.475Z"
-  }, {
-    _id: "2",
-    body: "I Like !",
-    created: "2015-09-14T18:42:12.475Z"
-  }, {
-    _id: "3",
-    body: "Awesome",
-    created: "2015-09-15T18:42:12.475Z"
-  }]
-}]
+    title: "JSON API paints my bikeshed!",
+    body: "The shortest article. Ever.",
+    created: "2015-05-22T14:56:29.000Z",
+    updated: "2015-05-22T14:56:28.000Z",
+    author: {
+      id: "1",
+      firstName: "Kaley",
+      lastName: "Maggio",
+      email: "Kaley-Maggio@example.com",
+      age: "80",
+      gender: "male"
+    },
+    tags: ["1", "2"],
+    photos: [
+      "ed70cf44-9a34-4878-84e6-0c0e4a450cfe",
+      "24ba3666-a593-498c-9f5d-55a4ee08c72e",
+      "f386492d-df61-4573-b4e3-54f6f5d08acf"
+    ],
+    comments: [
+      {
+        _id: "1",
+        body: "First !",
+        created: "2015-08-14T18:42:16.475Z"
+      },
+      {
+        _id: "2",
+        body: "I Like !",
+        created: "2015-09-14T18:42:12.475Z"
+      },
+      {
+        _id: "3",
+        body: "Awesome",
+        created: "2015-09-15T18:42:12.475Z"
+      }
+    ]
+  }
+];
 ```
 
 ### Register
+
 Register your resources types :
+
 ```javascript
-var JSONAPISerializer = require('json-api-serializer');
+var JSONAPISerializer = require("json-api-serializer");
 var Serializer = new JSONAPISerializer();
 
 // Register 'article' type
-Serializer.register('article', {
-  id: 'id', // The attributes to use as the reference. Default = 'id'.
-  blacklist: ['updated'], // An array of blacklisted attributes. Default = []
-  links: { // An object or a function that describes links.
-    self: function(data) { // Can be a function or a string value ex: { self: '/articles/1'}
-      return '/articles/' + data.id;
+Serializer.register("article", {
+  id: "id", // The attributes to use as the reference. Default = 'id'.
+  blacklist: ["updated"], // An array of blacklisted attributes. Default = []
+  links: {
+    // An object or a function that describes links.
+    self: function(data) {
+      // Can be a function or a string value ex: { self: '/articles/1'}
+      return "/articles/" + data.id;
     }
   },
-  relationships: { // An object defining some relationships.
+  relationships: {
+    // An object defining some relationships.
     author: {
-      type: 'people', // The type of the resource
-      links: function(data) { // An object or a function that describes Relationships links
+      type: "people", // The type of the resource
+      links: function(data) {
+        // An object or a function that describes Relationships links
         return {
-          self: '/articles/' + data.id + '/relationships/author',
-          related: '/articles/' + data.id + '/author'
-        }
-      },
+          self: "/articles/" + data.id + "/relationships/author",
+          related: "/articles/" + data.id + "/author"
+        };
+      }
     },
     tags: {
-      type: 'tag'
+      type: "tag"
     },
     photos: {
-      type: 'photo'
+      type: "photo"
     },
     comments: {
-      type: 'comment',
-      schema: 'only-body' // A custom schema
+      type: "comment",
+      schema: "only-body" // A custom schema
     }
   },
-  topLevelMeta: function(data, extraData) { // An object or a function that describes top level meta.
+  topLevelMeta: function(data, extraData) {
+    // An object or a function that describes top level meta.
     return {
       count: extraData.count,
       total: data.length
-    }
+    };
   },
-  topLevelLinks: { // An object or a function that describes top level links.
-    self: '/articles' // Can be a function (with extra data argument) or a string value
+  topLevelLinks: {
+    // An object or a function that describes top level links.
+    self: "/articles" // Can be a function (with extra data argument) or a string value
   }
 });
 
 // Register 'people' type
-Serializer.register('people', {
-  id: 'id',
+Serializer.register("people", {
+  id: "id",
   links: {
     self: function(data) {
-      return '/peoples/' + data.id;
+      return "/peoples/" + data.id;
     }
   }
 });
 
 // Register 'tag' type
-Serializer.register('tag', {
-  id: 'id',
+Serializer.register("tag", {
+  id: "id"
 });
 
 // Register 'photo' type
-Serializer.register('photo', {
-  id: 'id',
+Serializer.register("photo", {
+  id: "id"
 });
 
 // Register 'comment' type with a custom schema
-Serializer.register('comment', 'only-body', {
-  id: '_id',
+Serializer.register("comment", "only-body", {
+  id: "_id"
 });
 ```
 
@@ -195,6 +217,7 @@ Serializer.serializeAsync('article', data, {count: 2})
 ```
 
 The output data will be :
+
 ```JSON
 {
   "jsonapi": {
@@ -298,7 +321,8 @@ The output data will be :
   }]
 }
 ```
-Some others examples are available in [ tests folders](https://github.com/danivek/json-api-serializer/blob/master/test/)
+
+Some others examples are available in [tests folders](https://github.com/danivek/json-api-serializer/blob/master/test/)
 
 ### Deserialize
 
@@ -340,7 +364,7 @@ Serializer.deserialize('article', data);
 // Asynchronously (non-blocking)
 Serializer.deserializeAsync('article', data)
   .then((result) => {
-    ...
+    // ...
   });
 ```
 
@@ -363,25 +387,27 @@ Serializer.deserializeAsync('article', data)
 It is possible to define multiple custom schemas for a resource type :
 
 ```javascript
-Serializer.register(type, 'customSchema', options);
+Serializer.register(type, "customSchema", options);
 ```
 
 Then you can apply this schema on the primary data when serialize or deserialize :
 
 ```javascript
-Serializer.serialize('article', data, 'customSchema', {count: 2});
-Serializer.serializeAsync('article', data, 'customSchema', {count: 2});
-Serializer.deserialize('article', jsonapiData, 'customSchema');
+Serializer.serialize("article", data, "customSchema", { count: 2 });
+Serializer.serializeAsync("article", data, "customSchema", { count: 2 });
+Serializer.deserialize("article", jsonapiData, "customSchema");
+Serializer.deserializeAsync("article", jsonapiData, "customSchema");
 ```
 
 Or if you want to apply this schema on a relationship data, define this schema on relationships options with the key `schema` :
 
 Example :
+
 ```javascript
 relationships: {
   comments: {
-    type: 'comment'
-    schema: 'customSchema'
+    type: "comment";
+    schema: "customSchema";
   }
 }
 ```
@@ -390,44 +416,47 @@ relationships: {
 
 ### Serialize
 
-If your data contains one or multiple objects of different types, it's possible to define a configuration object instead of the type-string as the first argument of ```serialize``` and ```serializeAsync``` with these options:
+If your data contains one or multiple objects of different types, it's possible to define a configuration object instead of the type-string as the first argument of `serialize` and `serializeAsync` with these options:
 
-- **type** (required): A *string* for the path to the key to use to determine type or a *function* deriving a type-string from each data-item.
-- **jsonapiObject** (optional): Enable/Disable [JSON API Object](http://jsonapi.org/format/#document-jsonapi-object). Default = true.
-- **topLevelMeta** (optional): Describes the top-level meta. It can be:
-    - An *object* (values can be string or function).
-    - A *function* with one argument `function(extraData) { ... }` or with two arguments `function(data, extraData) { ... }`
-- **topLevelLinks** (optional): Describes the top-level links. It can be:
-    - An *object* (values can be string or function).
-    - A *function* with one argument `function(extraData) { ... }` or with two arguments `function(data, extraData) { ... }`
+* **type** (required): A _string_ for the path to the key to use to determine type or a _function_ deriving a type-string from each data-item.
+* **jsonapiObject** (optional): Enable/Disable [JSON API Object](http://jsonapi.org/format/#document-jsonapi-object). Default = true.
+* **topLevelMeta** (optional): Describes the top-level meta. It can be:
+  * An _object_ (values can be string or function).
+  * A _function_ with one argument `function(extraData) { ... }` or with two arguments `function(data, extraData) { ... }`
+* **topLevelLinks** (optional): Describes the top-level links. It can be:
+  * An _object_ (values can be string or function).
+  * A _function_ with one argument `function(extraData) { ... }` or with two arguments `function(data, extraData) { ... }`
 
 Example :
+
 ```javascript
 const typeConfig = {
   // Same as type: 'type'
-  type: (data) => data.type, // Can be very complex to determine different types of items.
+  type: data => data.type // Can be very complex to determine different types of items.
 };
 
-Serializer.serializeAsync(typeConfig, data, {count: 2})
-  .then((result) => {
-    // ...
-  });
+Serializer.serializeAsync(typeConfig, data, { count: 2 }).then(result => {
+  // ...
+});
 ```
 
 ### Deserialize
 
-If your data contains one or multiple objects of different types, it's possible to define a configuration object instead of the type-string as the first argument of ```deserialize``` with these options:
+If your data contains one or multiple objects of different types, it's possible to define a configuration object instead of the type-string as the first argument of `deserialize` with these options:
 
-- **type** (required): A *string* for the path to the key to use to determine type or a *function* deriving a type-string from each data-item.
+* **type** (required): A _string_ for the path to the key to use to determine type or a _function_ deriving a type-string from each data-item.
 
 Example :
+
 ```javascript
 const typeConfig = {
   // Same as type: 'type'
-  type: (data) => data.type, // Can be very complex to determine different types of items.
+  type: data => data.type // Can be very complex to determine different types of items.
 };
 
-const deserialized = Serializer.deserialize(typeConfig, data);
+const deserialized = Serializer.deserializeAsync(typeConfig, data).then(result => {
+  // ...
+});
 ```
 
 ## Requirements
