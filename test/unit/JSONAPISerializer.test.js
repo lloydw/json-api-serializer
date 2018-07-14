@@ -720,6 +720,26 @@ describe('JSONAPISerializer', function() {
       expect(serializedAttributes).to.have.property('title');
       done();
     });
+
+    it('should use an accessor when provided', function(done) {
+      const Serializer = new JSONAPISerializer();
+      Serializer.register('article', {
+        whitelist: [
+          { key: 'name' },
+          { key: 'title', accessor: (data, key) => data.name }
+        ]
+      });
+
+      const data = {
+        id: '1',
+        name: 'test'
+      };
+
+      const serializedAttributes = Serializer.serializeAttributes(data, Serializer.schemas.article.default);
+      expect(serializedAttributes).to.have.property('name').to.be.a('string').to.eql('test');
+      expect(serializedAttributes).to.have.property('title').to.be.a('string').to.eql('test'); // No such key, but use accessor
+      done();
+    });
   });
 
   describe('serializeIncluded', function() {
